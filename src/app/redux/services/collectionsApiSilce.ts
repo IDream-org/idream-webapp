@@ -1,4 +1,4 @@
-import { Collections } from "@prisma/client";
+import { Collections } from "@/app/models/Collections";
 import { apiSlice } from "./apiSlice";
 import { COLLECTIONS_URL } from "@/app/constants";
 
@@ -13,7 +13,7 @@ const collectionsApiTag = apiSlice.enhanceEndpoints({
 
 export const collectionsApiSlice = collectionsApiTag.injectEndpoints({
   endpoints: (builder) => ({
-    getCollections: builder.query<Collections[], {}>({
+    getCollections: builder.query<Collections, {}>({
       query: () => ({
         url: COLLECTIONS_URL,
       }),

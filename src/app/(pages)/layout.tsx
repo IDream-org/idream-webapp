@@ -1,9 +1,10 @@
 "use client";
 import React, { useContext } from "react";
 import { useRouter } from "next/navigation";
-import { useCookies } from "next-client-cookies";
 import { styled, useTheme } from "@mui/material/styles";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
+import { Link } from "@mui/material";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -20,7 +21,6 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 
-import { ACCESS_TOKEN } from "../constants";
 import { LayoutProps } from "./LayoutProps";
 import { layoutItems, layoutSubItems } from "./LayoutItems";
 import { ThemeContext } from "@/components/ThemeRegistry/ThemeRegistry";
@@ -81,7 +81,8 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const theme = useTheme();
   const router = useRouter();
-  const cookies = useCookies();
+  const { user, isLoading: loadingUser } = useUser();
+
   const dispatch = useAppDispatch();
   const { open } = useAppSelector((state) => state.drawer);
 
@@ -96,103 +97,119 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <AppBar position="fixed" open={open}>
-        <Avatar
-          alt="Remy Sharp"
-          // src={session?.user.avatar}
-          // onClick={() => router.push("/profile")}
+    !loadingUser && (
+      <Box sx={{ display: "flex" }}>
+        <AppBar position="fixed" open={open}>
+          <Avatar
+            alt="Remy Sharp"
+            src={user?.picture || ""}
+            // onClick={() => router.push("/profile")}
+            sx={{
+              position: "absolute",
+              top: 12,
+              right: 30,
+              margin: "auto",
+              marginBottom: 10,
+              cursor: "pointer",
+              zIndex: 10,
+            }}
+          />
+          <MaterialUISwitch
+            sx={{ position: "absolute", right: 80, top: 15, zIndex: 10 }}
+            onChange={() => setMode(mode === "light" ? "dark" : "light")}
+          />
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{ mr: 2, ...(open && { display: "none" }) }}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <Drawer
           sx={{
-            position: "absolute",
-            top: 12,
-            right: 30,
-            margin: "auto",
-            marginBottom: 10,
-            cursor: "pointer",
-            zIndex: 10,
-          }}
-        />
-        <MaterialUISwitch
-          sx={{ position: "absolute", right: 80, top: 15, zIndex: 10 }}
-          onChange={() => setMode(mode === "light" ? "dark" : "light")}
-        />
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ mr: 2, ...(open && { display: "none" }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
             width: drawerWidth,
-            boxSizing: "border-box",
-          },
-        }}
-        variant="persistent"
-        anchor="left"
-        open={open}
-      >
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
-            ) : (
-              <ChevronRightIcon />
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: drawerWidth,
+              boxSizing: "border-box",
+            },
+          }}
+          variant="persistent"
+          anchor="left"
+          open={open}
+        >
+          <DrawerHeader>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === "ltr" ? (
+                <ChevronLeftIcon />
+              ) : (
+                <ChevronRightIcon />
+              )}
+            </IconButton>
+          </DrawerHeader>
+          <Divider />
+          <List>
+            {layoutItems.map(({ name, path, Icon }) => (
+              <ListItem
+                key={name}
+                disablePadding
+                onClick={(e) => {
+                  e.preventDefault();
+                  router.push(path);
+                }}
+              >
+                <ListItemButton>
+                  <ListItemIcon>{<Icon />}</ListItemIcon>
+                  <ListItemText primary={name} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List>
+            {layoutSubItems.map(({ name, path, Icon }) =>
+              name === "Logout" ? (
+                <ListItem key={name} disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>{<Icon />}</ListItemIcon>
+                    <Link
+                      href={path}
+                      color="#000000DE"
+                      sx={{ textDecoration: "none" }}
+                    >
+                      logout
+                    </Link>
+                  </ListItemButton>
+                </ListItem>
+              ) : (
+                <ListItem
+                  key={name}
+                  disablePadding
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    router.push(path);
+                  }}
+                >
+                  <ListItemButton>
+                    <ListItemIcon>{<Icon />}</ListItemIcon>
+                    <ListItemText primary={name} />
+                  </ListItemButton>
+                </ListItem>
+              )
             )}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
-        <List>
-          {layoutItems.map(({ name, path, Icon }) => (
-            <ListItem
-              key={name}
-              disablePadding
-              onClick={(e) => {
-                e.preventDefault();
-                router.push(path);
-              }}
-            >
-              <ListItemButton>
-                <ListItemIcon>{<Icon />}</ListItemIcon>
-                <ListItemText primary={name} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List>
-          {layoutSubItems.map(({ name, path, Icon }) => (
-            <ListItem
-              key={name}
-              disablePadding
-              onClick={async (e) => {
-                e.preventDefault();
-                cookies.remove(ACCESS_TOKEN);
-                router.push("/");
-              }}
-            >
-              <ListItemButton>
-                <ListItemIcon>{<Icon />}</ListItemIcon>
-                <ListItemText primary={name} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      <Main open={open}>
-        <DrawerHeader />
-        {children}
-      </Main>
-    </Box>
+          </List>
+        </Drawer>
+        <Main open={open}>
+          <DrawerHeader />
+          {children}
+        </Main>
+      </Box>
+    )
   );
 };
 

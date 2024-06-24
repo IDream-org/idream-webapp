@@ -6,7 +6,8 @@ export const USER_URL = "/api/user";
 export const USERS_URL = "/api/users";
 
 export const COLLECTION_URL = "/api/collection";
-export const COLLECTIONS_URL = "/api/collections";
+export const COLLECTIONS_URL =
+  "https://7i97iqcjhe.execute-api.us-east-1.amazonaws.com/dev/collections";
 export const COLECTION_USERS_URL = "/api/collection/users";
 
 export const CATEGORIES_URL = "/api/categories";

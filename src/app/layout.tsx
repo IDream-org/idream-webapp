@@ -5,6 +5,7 @@ import { Providers } from "./redux/provider";
 import { CookiesProvider } from "next-client-cookies/server";
 import ThemeRegistry from "@/components/ThemeRegistry/ThemeRegistry";
 import SimpleSnackbar from "@/components/SimpleSnackBar/SimpleSnackBar";
+import { UserProvider } from "@auth0/nextjs-auth0/client";
 
 import "./globals.css";
 
@@ -34,10 +35,12 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <ThemeRegistry>
-          <Providers>
-            <SimpleSnackbar />
-            <CookiesProvider>{children}</CookiesProvider>
-          </Providers>
+          <UserProvider>
+            <Providers>
+              <SimpleSnackbar />
+              <CookiesProvider>{children}</CookiesProvider>
+            </Providers>
+          </UserProvider>
         </ThemeRegistry>
       </body>
     </html>

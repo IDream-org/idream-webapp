@@ -35,7 +35,7 @@ export const layoutItems: LayoutItems[] = [
 export const layoutSubItems: LayoutItems[] = [
   {
     name: "Logout",
-    path: "/",
+    path: "/api/auth/logout",
     Icon: LogoutIcon,
   },
 ];

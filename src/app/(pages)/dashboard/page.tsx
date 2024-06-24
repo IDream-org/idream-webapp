@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMediaQuery, useTheme } from "@mui/material";
+import { useUser } from "@auth0/nextjs-auth0/client";
+
 // import { Categories, CategoryItems, Collections, Notes } from "@prisma/client";
 
 import Grid from "@mui/material/Grid";
@@ -81,6 +83,7 @@ import CenterLoading from "@/components/CenterLoading/CenterLoading";
 const DashboardPage = () => {
   const theme = useTheme();
   const router = useRouter();
+  const { user, isLoading: loadingUser } = useUser();
   const lgSize = useMediaQuery(theme.breakpoints.down("lg"));
 
   const { data, isLoading } = useGetAllCategoryItemQuery({});
@@ -100,7 +103,9 @@ const DashboardPage = () => {
   //     }
   //   }, [isLoading, data]);
 
-  return (
+  return loadingUser ? (
+    <CenterLoading />
+  ) : (
     <Grid container justifyContent={"center"}>
       <Grid item xs={lgSize ? 12 : 10}>
         <Grid
@@ -130,9 +135,7 @@ const DashboardPage = () => {
                 day: "numeric",
               })}
             </Typography>
-            <Typography variant="h4">
-              {/* Welcome back {session?.user.firstName}! */}
-            </Typography>
+            <Typography variant="h4">Welcome back {user?.name}!</Typography>
           </Grid>
         </Grid>
       </Grid>

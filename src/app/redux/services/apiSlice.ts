@@ -3,6 +3,16 @@ import { BASE_URL } from "@/app/constants";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: BASE_URL,
+  prepareHeaders: async (headers) => {
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("idToken="))
+      ?.split("=")[1];
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+    return headers;
+  },
 });
 
 export const apiSlice = createApi({
