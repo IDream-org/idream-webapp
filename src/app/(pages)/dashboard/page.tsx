@@ -19,8 +19,8 @@ import ImageListItem from "@mui/material/ImageListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 
-import { useGetAllCategoryItemQuery } from "@/app/redux/services/categoryItemApiSlice";
-import { useGetUsersQuery } from "@/app/redux/services/usersApiSlice";
+// import { useGetAllCategoryItemQuery } from "@/app/redux/services/categoryItemApiSlice";
+// import { useGetUsersQuery } from "@/app/redux/services/usersApiSlice";
 import CenterLoading from "@/components/CenterLoading/CenterLoading";
 
 // interface Comments extends Notes {
@@ -86,8 +86,8 @@ const DashboardPage = () => {
   const { user, isLoading: loadingUser } = useUser();
   const lgSize = useMediaQuery(theme.breakpoints.down("lg"));
 
-  const { data, isLoading } = useGetAllCategoryItemQuery({});
-  const { data: usersQuery } = useGetUsersQuery({});
+  // const { data, isLoading } = useGetAllCategoryItemQuery({});
+  // const { data: usersQuery } = useGetUsersQuery({});
 
   const [lading, setLoading] = useState(true);
   //   const [items, setItems] = useState<Items[]>([]);
